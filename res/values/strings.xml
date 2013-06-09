@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Mp3Player</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="mp3list.update">更新列表</string>
+    <string name="mp3list.about">关于</string>
+    <string name="title_activity_local_mp3_list">LocalMp3ListActivity</string>
+    <string name="title_activity_player">PlayerActivity</string>
+    <string name="title_activity_about_activity_dialog">AboutActivityDialog</string>
+    <string name="title_activity_welcome">WelcomeActivity</string>
+	<string name="pageOne">页面1</string>
+	<string name="pageTwo">页面2</string>
+	<string name="pageThree">页面3</string>
+	<string name="localmusic">本地音乐</string>
+	<string name="downmusic">下载管理</string>
+	<string name="aboutus">关于我们</string>
+	<string name="downloadcontrol">下载管理</string>
+</resources>
