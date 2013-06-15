@@ -9,17 +9,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="18dp"
-    />
+        android:layout_marginLeft="38dp"
+        android:layout_marginTop="17dp"
+        android:textColor="#FFFFFF"/>
 
     <TextView
         android:id="@+id/mp3_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/mp3_name"
+        android:layout_alignBottom="@+id/mp3_name"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="66dp"
-     />
+        android:layout_marginRight="50dp"
+        android:textColor="#FFFFFF"/>
 
 </RelativeLayout>

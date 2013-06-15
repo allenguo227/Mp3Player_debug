@@ -8,6 +8,9 @@ import android.view.Menu;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationSet;
 import guo.fragment.*;
+/**
+ *欢迎页面 
+ */
 
 public class WelcomeActivity extends Activity {
 

@@ -6,6 +6,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+/**
+ *Fragment适配器，用以Fragment与viewpager适配 
+ */
 public class MainFragmentPagerAdapter extends FragmentPagerAdapter { 
 private ArrayList<Fragment> fragments; 
 public MainFragmentPagerAdapter(FragmentManager fm) { 

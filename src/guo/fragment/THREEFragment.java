@@ -16,7 +16,7 @@ public class THREEFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		View v=inflater.inflate(R.layout.three, container, false);
+		View v=inflater.inflate(R.layout.mypage_three, container, false);
 		return v;
 	}
 }

@@ -24,6 +24,9 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ *  程序主页面
+ */
 public class MainActivity extends FragmentActivity {
 	private ViewPager mPager;//页卡内容
 	private ArrayList<Fragment> listViews; //Tab页面列表
@@ -53,6 +56,7 @@ public class MainActivity extends FragmentActivity {
 		 t2.setOnClickListener(new MyOnClickListener(1));
 		 t3.setOnClickListener(new MyOnClickListener(2));
 		 }
+		 
 	/**
 	* 头标点击监听
 	*/
@@ -67,15 +71,11 @@ public class MainActivity extends FragmentActivity {
 	}
 	};
 	/**
-	* 初始化ViewPager
+	* 初始化ViewPager，并适配fragment
 	*/
 	private void InitViewPager() {
 	mPager = (ViewPager) findViewById(R.id.vPager);
 	listViews = new ArrayList<Fragment>();
-/*	LayoutInflater mInflater = getLayoutInflater();
-	listViews.add(mInflater.inflate(R.layout.one, null));
-	listViews.add(mInflater.inflate(R.layout.two, null));
-	listViews.add(mInflater.inflate(R.layout.three, null));*/
 	listViews.add(oneFragment);
 	listViews.add(twoFragment);
 	listViews.add(thrFragment);
@@ -84,53 +84,15 @@ public class MainActivity extends FragmentActivity {
 	//通过fragment适配器把fragment添加入viewpager中
 	mPager.setAdapter(new MainFragmentPagerAdapter(fragmentManager,listViews));
 	mPager.setCurrentItem(0);
+	t1.setBackgroundColor(R.drawable.mypage_bg_on);
 	mPager.setOnPageChangeListener(new MyOnPageChangeListener());
-	}
-	/**
-	* ViewPager适配器
-	*/
-	public class MyPagerAdapter extends PagerAdapter {
-	public List<View> mListViews;
-	public MyPagerAdapter(List<View> mListViews) {
-	this.mListViews = mListViews;
-	}
-	@Override
-	public void destroyItem(View arg0, int arg1, Object arg2) {
-	((ViewPager) arg0).removeView(mListViews.get(arg1));
-	}
-	@Override
-	public void finishUpdate(View arg0) {
-	}
-	@Override
-	public int getCount() {
-	return mListViews.size();
-	}
-	@Override
-	public Object instantiateItem(View arg0, int arg1) {
-	((ViewPager) arg0).addView(mListViews.get(arg1), 0);
-	return mListViews.get(arg1);
-	}
-	@Override
-	public boolean isViewFromObject(View arg0, Object arg1) {
-	return arg0 == (arg1);
-	}
-	@Override
-	public void restoreState(Parcelable arg0, ClassLoader arg1) {
-	}
-	@Override
-	public Parcelable saveState() {
-	return null;
-	}
-	@Override
-	public void startUpdate(View arg0) {
-	}
 	}
 	/**
 	* 初始化动画
 	*/
 	private void InitImageView() {
 	cursor = (ImageView) findViewById(R.id.cursor);
-	bmpW = BitmapFactory.decodeResource(getResources(), R.drawable.a).getWidth();//获取图片宽度
+	bmpW = BitmapFactory.decodeResource(getResources(), R.drawable.cursor).getWidth();//获取图片宽度
 	DisplayMetrics dm = new DisplayMetrics();
 	getWindowManager().getDefaultDisplay().getMetrics(dm);
 	int screenW = dm.widthPixels;//获取分辨率宽度
@@ -151,6 +113,9 @@ public class MainActivity extends FragmentActivity {
 	Animation animation = null;
 	switch(arg0) {
 	case 0:
+		t1.setBackgroundDrawable(getResources().getDrawable(R.drawable.mypage_bg_on));
+		t2.setBackgroundDrawable(getResources().getDrawable(R.drawable.mypage_bg_un));
+		t3.setBackgroundDrawable(getResources().getDrawable(R.drawable.mypage_bg_un));
 	if(currIndex == 1) {
 	animation = new TranslateAnimation(one, 0, 0, 0);
 	} else if(currIndex == 2) {
@@ -158,6 +123,9 @@ public class MainActivity extends FragmentActivity {
 	}
 	break;
 	case 1:
+		t2.setBackgroundDrawable(getResources().getDrawable(R.drawable.mypage_bg_on));
+		t1.setBackgroundDrawable(getResources().getDrawable(R.drawable.mypage_bg_un));
+		t3.setBackgroundDrawable(getResources().getDrawable(R.drawable.mypage_bg_un));
 	if(currIndex == 0) {
 	animation = new TranslateAnimation(offset, one, 0, 0);
 	} else if(currIndex == 2) {
@@ -165,6 +133,9 @@ public class MainActivity extends FragmentActivity {
 	}
 	break;
 	case 2:
+		t3.setBackgroundDrawable(getResources().getDrawable(R.drawable.mypage_bg_on));
+		t1.setBackgroundDrawable(getResources().getDrawable(R.drawable.mypage_bg_un));
+		t2.setBackgroundDrawable(getResources().getDrawable(R.drawable.mypage_bg_un));
 	if(currIndex == 0) {
 	animation = new TranslateAnimation(offset, two, 0, 0);
 	} else if(currIndex == 1) {

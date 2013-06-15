@@ -48,7 +48,7 @@ public class DownloadService extends Service {
 			String lrcUrl=AppConstant.URL.BASE_URL+"/"+mp3Info.getLrcName();
 			//生成下载文件所用的对象
 			HttpDownloader httpDownloader =new HttpDownloader();
-			//将文件下载下来，并存储到SDCard当中
+			//将文件下载下来，并存储到SDCard当中的MP3文件夹中
 			int result_mp3=0;
 			if(mp3Info.getMp3CnName()!=null&&mp3Info.getLrcCnName()!=null){
 			result_mp3=httpDownloader.downFile(mp3Url, "mp3/", mp3Info.getMp3CnName());
@@ -72,13 +72,12 @@ public class DownloadService extends Service {
 				resultMessage="";
 			
 			}
+			//通过广播返回下载结果。
 			Intent intent=new Intent();
 			intent.setAction(AppConstant.DOWNLOAD_RESULT);
 			intent.putExtra("downloadresult", resultMessage);
 			sendBroadcast(intent);
-			//使用notification提示客户下载结果，这里尚未完善。
-				System.out.println("下载结果:------>"+resultMessage);	
-		
+			
 		} 
 		
 	}

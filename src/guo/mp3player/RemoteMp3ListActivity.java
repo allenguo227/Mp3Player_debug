@@ -47,12 +47,13 @@ public class RemoteMp3ListActivity extends ListActivity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		//绑定广播与过滤器
 		receiver=new DownloadBroadcastReceiver();
 		registerReceiver(receiver, getIntentFilter());
 	}
 
 	/**
-	 * 通过menu键调出菜单栏选项
+	 * 通过menu键调出菜单栏选项,包括‘更新’和‘关于’两项
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,7 +80,9 @@ public class RemoteMp3ListActivity extends ListActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	
+	/**
+	 * 更新下载列表
+	 */
 	private void updateListView() {
 		// TODO Auto-generated method stub	
 		//判断当前网络状态
@@ -99,22 +102,23 @@ public class RemoteMp3ListActivity extends ListActivity {
 		}
 	}
 	
-	//simpleadapter
+	//把从服务器获取到的歌曲列表写入到相关listview中
 	private SimpleAdapter buildSimpleAdapter(List<Mp3Info>mp3Infos){
 		List<HashMap<String,String>>list=new ArrayList<HashMap<String,String>>();
+		int mp3_num=1;
 		for (Iterator iterator = mp3Infos.iterator(); iterator.hasNext();) {
 			Mp3Info mp3Info=(Mp3Info)iterator.next();
 			HashMap<String, String> map = new HashMap<String, String>();
 			if(mp3Info.getMp3CnName()!=null){
-			map.put("mp3_name",mp3Info.getMp3CnName());
+			map.put("mp3_name",mp3_num+++" "+mp3Info.getMp3CnName());
 			}
 			else{
-			map.put("mp3_name",mp3Info.getMp3Name());
+			map.put("mp3_name",mp3_num+++" "+mp3Info.getMp3Name());
 			}
 			map.put("mp3_size",mp3Info.getMp3Size());
 			list.add(map);
 		}
-		SimpleAdapter simpleAdapter=new SimpleAdapter(this,list,R.layout.mp3_list
+		SimpleAdapter simpleAdapter=new SimpleAdapter(this,list,R.layout.mp3_remote_list_item
 				,new String[]{"mp3_name","mp3_size"},new int[]{R.id.mp3_name,R.id.mp3_size});
 		
 		return simpleAdapter;
@@ -163,7 +167,9 @@ public class RemoteMp3ListActivity extends ListActivity {
 		}
 		return infos;
 	}
-
+/**
+ * 点击下载列表，通知DownloadService下载相关歌曲
+ */
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		Mp3Info mp3Info=mp3Infos.get(position);
@@ -173,7 +179,7 @@ public class RemoteMp3ListActivity extends ListActivity {
 		startService(intent);
 		super.onListItemClick(l, v, position, id);
 	}
-
+	//广播过滤器
 	private IntentFilter getIntentFilter(){
 		if(intentFilter==null){
 			intentFilter=new IntentFilter();
@@ -181,6 +187,7 @@ public class RemoteMp3ListActivity extends ListActivity {
 		}
 		return intentFilter;
 	}
+	//用于接收来之下载线程返回的消息
 	class DownloadBroadcastReceiver extends BroadcastReceiver{
 		@Override
 		public void onReceive(Context context, Intent intent) {
