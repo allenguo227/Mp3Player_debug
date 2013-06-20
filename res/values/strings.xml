@@ -16,7 +16,10 @@
 	<string name="localmusic">本地音乐</string>
 	<string name="downmusic">下载管理</string>
 	<string name="aboutus">关于我们</string>
-	<string name="siger">歌曲名称</string>
-	<string name="time">播放时长</string>
+	<string name="siger">当前播放</string>
+	<string name="musicname_list"></string>
 	<string name="blank"> </string>
+	<string name="musicname_playing">当前播放:</string>
+	<string name="reload_popupwindow">更新歌曲</string>
+	<string name="exit_popupwindow">退出</string>
 </resources>

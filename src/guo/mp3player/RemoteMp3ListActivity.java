@@ -11,8 +11,10 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import guo.download.HttpDownloader;
+import guo.fragment.MainActivity;
 import guo.model.Mp3Info;
 import guo.mp3player.service.DownloadService;
+import guo.mp3player.service.PlayerService;
 import guo.utils.NetworkStatusUtils;
 import guo.xml.Mp3ListContentHandler;
 import android.os.AsyncTask;
@@ -36,7 +38,8 @@ public class RemoteMp3ListActivity extends ListActivity {
 	private List<Mp3Info>mp3Infos=null;
 	private IntentFilter intentFilter;
 	private BroadcastReceiver receiver;
-	
+	private IntentFilter exitApp_IntentFilter;
+	private BroadcastReceiver exitReceiver;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,6 +53,15 @@ public class RemoteMp3ListActivity extends ListActivity {
 		//绑定广播与过滤器
 		receiver=new DownloadBroadcastReceiver();
 		registerReceiver(receiver, getIntentFilter());
+		exitReceiver=new ExitAppBroadcastReceiver();
+		registerReceiver(exitReceiver,getExitApp_IntentFilter());
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		unregisterReceiver(exitReceiver);
 	}
 
 	/**
@@ -217,6 +229,24 @@ public class RemoteMp3ListActivity extends ListActivity {
 			return result;
 		}
 		
+	}
+	class ExitAppBroadcastReceiver extends BroadcastReceiver
+	{
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			finish();
+		}
+		
+	}
+	//关闭activity的broadcast过滤器
+	private IntentFilter getExitApp_IntentFilter(){
+		if(exitApp_IntentFilter==null){
+			 exitApp_IntentFilter=new IntentFilter();
+			 exitApp_IntentFilter.addAction(AppConstant.EXITAPP_ACTION);
+		}
+		return exitApp_IntentFilter;
 	}
 	
 }

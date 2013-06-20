@@ -11,7 +11,7 @@ import android.view.ViewGroup;
  * @author Administrator
  *第二个Fragment
  */
-public class TWOFragment extends Fragment {
+public class SearchMusic_Fragment extends Fragment {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {

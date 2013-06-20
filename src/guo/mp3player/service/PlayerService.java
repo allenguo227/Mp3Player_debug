@@ -14,20 +14,18 @@ import java.util.Queue;
 import lrc.LrcProcessor;
 import android.app.Service;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.MediaStore;
 /**
  * @author Administrator
  *��̨�������ֵķ���
  */
 public class PlayerService extends Service {
-
-	private boolean isPlaying=false;
-	private boolean isPause=false;
-	private boolean isReleased=false;
 	private MediaPlayer mediaPlayer=null;
 	@SuppressWarnings("rawtypes")
 	ArrayList<Queue> queues = null;
@@ -42,7 +40,8 @@ public class PlayerService extends Service {
 	private String message = null;
 	private int seekbarprogress=0;
 	private int SEEKBARCHANGE;
-	int seekbar_duration;
+	private int seekbar_duration;
+	private boolean isPause=false;
 	@Override
 	public IBinder onBind(Intent arg0) {
 		return null;
@@ -65,25 +64,28 @@ public class PlayerService extends Service {
 		case AppConstant.PlayerMsg.PAUSE_MSG:
 			pause();
 			break;
+		case AppConstant.PlayerMsg.NEXT_MSG:
+			nextOrPre(mp3Info);
+			break;
 		case AppConstant.PlayerMsg.SEEK_MSG:
 			seekbarControl();
+			break;
+		case AppConstant.PlayerMsg.PRIVIOUS_MSG:
+			nextOrPre(mp3Info);
 			break;
 		default:
 			System.out.println("default--->");
 			break;
 		}
-		/*if(MSG==AppConstant.PlayerMsg.PLAY_MSG){
-			nextMusic(mp3Info);
-		}else	if(MSG==AppConstant.PlayerMsg.PAUSE_MSG){
-			pause();
-		}else if(MSG==AppConstant.PlayerMsg.PRIVIOUS_MSG){
-			
-		}else if(MSG==AppConstant.PlayerMsg.NEXT_MSG){
-			nextMusic(mp3Info);
-		}else if(MSG==AppConstant.PlayerMsg.SEEK_MSG){
-			seekbarControl();
-		}*/
 		return super.onStartCommand(intent, flags, startId);
+	}
+	
+	
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		System.out.println("service被销毁了");
 	}
 	//通过seekbar改变传过来的值，改变歌曲播放位置
 	private void seekbarControl(){
@@ -98,11 +100,11 @@ public class PlayerService extends Service {
 		}
 		//播放mediaplayer
 		mediaPlayer.start();
+		begin+=System.currentTimeMillis()-pauseTimeMills;
 		//创建通知歌词改变的对象
 		prepareLrc(mp3Info.getLrcName());
 		//创建通知seekbar改变的对象
 		prepareSeekbar();
-		begin=System.currentTimeMillis();
 		//每5毫秒post一次，更新
 		handler.postDelayed(updateTimeCallback, 5);
 		handler.postDelayed(updateSeekbarProgress, 5);
@@ -112,6 +114,32 @@ public class PlayerService extends Service {
 			handler.removeCallbacks(updateTimeCallback);
 			handler.removeCallbacks(updateSeekbarProgress);
 			pauseTimeMills = System.currentTimeMillis() ;
+			isPause=true;
+	}
+	private void stop(){
+		if(mediaPlayer!=null){
+		mediaPlayer.stop();
+		mediaPlayer.release();
+		handler.removeCallbacks(updateTimeCallback);
+		handler.removeCallbacks(updateSeekbarProgress);
+		}
+	}
+	private void nextOrPre(Mp3Info mp3Info){
+		//如果不为空，创建MP3
+		stop();
+		mediaPlayer=MediaPlayer.create(this, Uri.parse("file://"+getMp3Path(mp3Info)));
+		//播放mediaplayer
+		mediaPlayer.start();
+		//创建通知歌词改变的对象
+		prepareLrc(mp3Info.getLrcName());
+		//创建通知seekbar改变的对象
+		prepareSeekbar();
+		begin=System.currentTimeMillis();
+		currentTimeMill = 0;
+		nextTimeMill = 0;
+		//每5毫秒post一次，更新
+		handler.postDelayed(updateTimeCallback, 5);
+		handler.postDelayed(updateSeekbarProgress, 5);
 	}
 	private void prepareLrc(String lrcName){
 		try{
@@ -119,11 +147,7 @@ public class PlayerService extends Service {
 					+ File.separator + "mp3/" + lrcName);
 			LrcProcessor lrcProcessor = new LrcProcessor();
 			queues = lrcProcessor.process(inputStream);
-			//����һ��UpdateTimeCallback����
 			updateTimeCallback = new UpdateTimeCallback(queues);
-			begin = 0;
-			currentTimeMill = 0;
-			nextTimeMill = 0;
 		}catch(FileNotFoundException e){
 			e.printStackTrace();
 		}
@@ -188,6 +212,4 @@ public class PlayerService extends Service {
 			handler.postDelayed(updateSeekbarProgress, 10);
 		}
 	}
-
-
 }

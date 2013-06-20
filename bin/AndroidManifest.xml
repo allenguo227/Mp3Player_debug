@@ -24,7 +24,8 @@
          </activity>
          <activity 
             android:name="guo.fragment.MainActivity"
-            android:label="@string/app_name" >  
+            android:label="@string/app_name" 
+            android:configChanges="orientation|keyboardHidden">  
         </activity> 
           <activity
             android:name=".MainActivity"

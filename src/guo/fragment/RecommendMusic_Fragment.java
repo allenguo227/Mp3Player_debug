@@ -10,7 +10,7 @@ import android.view.ViewGroup;
  * @author Administrator
  *第三个Fragment
  */
-public class THREEFragment extends Fragment {
+public class RecommendMusic_Fragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

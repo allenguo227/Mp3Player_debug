@@ -1,19 +1,52 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"  
     xmlns:tools="http://schemas.android.com/tools"  
-    android:id="@+id/RelativeLayout1"  
+    android:id="@+id/local_mp3_list_RelativeLayout"  
     android:layout_width="match_parent"  
     android:layout_height="match_parent"  
     android:background="@drawable/background"  
-    android:orientation="vertical" >  
+    android:orientation="vertical"  
+    >  
   
+   <RelativeLayout
+        android:id="@+id/listview_layout"  
+        android:layout_width="match_parent"  
+        android:layout_height="wrap_content"   
+        >  
+    <ListView  
+        android:id="@id/android:list"
+        android:layout_width="match_parent"  
+        android:layout_height="fill_parent"  
+        android:layout_marginBottom="120dip"
+        android:layout_marginLeft="20dip"
+        android:layout_marginRight="20dip"
+         >  
+    </ListView>
+    </RelativeLayout>
+       <RelativeLayout
+        android:id="@+id/seekbar_layout"  
+        android:layout_width="match_parent"  
+        android:layout_height="wrap_content" 
+       android:layout_below="@id/listview_layout"
+       android:paddingRight="50dip"   
+       android:paddingLeft="50dip" > 
+            <SeekBar  
+                android:id="@+id/audioTrack_local"  
+                android:layout_width="match_parent"  
+                android:layout_height="wrap_content"   
+                android:layout_centerVertical="true"  
+                android:background="@drawable/seek_bar"  
+                android:progressDrawable="@drawable/seek_bar"  
+                android:thumb="@drawable/thumb"  
+                />  
+    </RelativeLayout>
     <RelativeLayout  
         android:id="@+id/handle_btnlayout"  
         android:layout_width="match_parent"  
-        android:layout_height="wrap_content" 
+        android:layout_height="wrap_content"    
         android:paddingLeft="30dip"
         android:paddingRight="30dip"
+        android:layout_below="@id/seekbar_layout"  
         >  
-  
         <Button  
             android:id="@+id/previous_music"  
             android:layout_width="wrap_content"  
@@ -49,24 +82,15 @@
              android:layout_toRightOf="@id/play_music"  
             android:background="@drawable/next_music_selector" />  
     </RelativeLayout>  
-  
-    <ListView  
-        android:id="@id/android:list"
-        android:layout_width="match_parent"  
-        android:layout_height="wrap_content"  
-        android:layout_below="@id/handle_btnlayout"  
-        android:layout_marginBottom="50dp"
-        android:layout_marginLeft="20dip"
-        android:layout_marginRight="20dip"
-         >  
-    </ListView>
 
     <RelativeLayout
         android:id="@+id/singleSong_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" >
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dip"
+        android:layout_below="@id/handle_btnlayout"
+         >
 
         <ImageView
             android:id="@+id/music_album"
@@ -87,7 +111,7 @@
              >
 
             <TextView
-                android:id="@+id/text1"
+                android:id="@+id/siger"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -95,22 +119,23 @@
                 android:layout_marginTop="5.0dp"
                 android:text="@string/siger" />
 			 <TextView
-                android:id="@+id/text2"
+                android:id="@+id/blank"
                 android:layout_width="15dip"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5.0dp"
-                android:layout_toRightOf="@id/text1"
+                android:layout_toRightOf="@id/siger"
                 android:text="@string/blank" />
             <TextView
-                android:id="@+id/text3"
+                android:id="@+id/musicname_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5.0dp"
-                android:layout_toRightOf="@id/text2"
-                android:text="@string/time" />
+                android:layout_toRightOf="@id/blank"
+                android:text="@string/musicname_list" />
         </RelativeLayout>
 
         <Button
+            android:id="@+id/locallist_popupwindow_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

@@ -22,7 +22,7 @@ import android.widget.SimpleAdapter;
  * @author Administrator
  *第一个Fragment，Activity相关的内容在这里处理。
  */
-public class OneFragment extends Fragment {
+public class My_Fragment extends Fragment {
 	 private GridView gridview; 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,18 +58,6 @@ public class OneFragment extends Fragment {
         gridview.setOnItemClickListener(new ItemClickListener());  
         return v;
     }  
-	
-	
-  
-    @Override
-	public void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		System.exit(0);
-	}
-
-
-
 	// 当AdapterView被单击(触摸屏或者键盘)，则返回的Item单击事件 
 	class ItemClickListener implements OnItemClickListener {  
 	    public void onItemClick(AdapterView<?> arg0,// The AdapterView where the click happened  
