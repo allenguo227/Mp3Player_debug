@@ -89,8 +89,10 @@ public class PlayerService extends Service {
 	}
 	//通过seekbar改变传过来的值，改变歌曲播放位置
 	private void seekbarControl(){
+		if(mediaPlayer!=null){
 		seekbar_duration=mediaPlayer.getDuration();
 		mediaPlayer.seekTo(SEEKBARCHANGE*seekbar_duration/100);
+		}
 	}
 	//播放歌曲的方法
 	private void play(Mp3Info mp3Info){
@@ -99,6 +101,7 @@ public class PlayerService extends Service {
 			mediaPlayer=MediaPlayer.create(this, Uri.parse("file://"+getMp3Path(mp3Info)));
 		}
 		//播放mediaplayer
+		mediaPlayer.setLooping(true);
 		mediaPlayer.start();
 		begin+=System.currentTimeMillis()-pauseTimeMills;
 		//创建通知歌词改变的对象
@@ -129,6 +132,7 @@ public class PlayerService extends Service {
 		stop();
 		mediaPlayer=MediaPlayer.create(this, Uri.parse("file://"+getMp3Path(mp3Info)));
 		//播放mediaplayer
+		mediaPlayer.setLooping(true);
 		mediaPlayer.start();
 		//创建通知歌词改变的对象
 		prepareLrc(mp3Info.getLrcName());

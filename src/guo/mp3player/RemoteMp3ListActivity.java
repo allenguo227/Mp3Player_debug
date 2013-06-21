@@ -20,6 +20,9 @@ import guo.xml.Mp3ListContentHandler;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.ListActivity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -40,12 +43,12 @@ public class RemoteMp3ListActivity extends ListActivity {
 	private BroadcastReceiver receiver;
 	private IntentFilter exitApp_IntentFilter;
 	private BroadcastReceiver exitReceiver;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.remote_mp3_list);
 	}
-
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
@@ -62,6 +65,7 @@ public class RemoteMp3ListActivity extends ListActivity {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		unregisterReceiver(exitReceiver);
+		unregisterReceiver(receiver);
 	}
 
 	/**
@@ -191,20 +195,14 @@ public class RemoteMp3ListActivity extends ListActivity {
 		startService(intent);
 		super.onListItemClick(l, v, position, id);
 	}
-	//广播过滤器
-	private IntentFilter getIntentFilter(){
-		if(intentFilter==null){
-			intentFilter=new IntentFilter();
-			intentFilter.addAction(AppConstant.DOWNLOAD_RESULT);
-		}
-		return intentFilter;
-	}
+
 	//用于接收来之下载线程返回的消息
 	class DownloadBroadcastReceiver extends BroadcastReceiver{
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			String downloadresult=intent.getStringExtra("downloadresult");
+			String mp3name_downloading=intent.getStringExtra("mp3name_downloading");
 			System.out.println("downloaderresult------->"+downloadresult);
 			if(downloadresult.equals("download_fail")){
 				Toast.makeText(RemoteMp3ListActivity.this, "文件下载失败！", Toast.LENGTH_SHORT).show();
@@ -215,12 +213,9 @@ public class RemoteMp3ListActivity extends ListActivity {
 			else if(downloadresult.equals("download_isexisted")){
 				Toast.makeText(RemoteMp3ListActivity.this, "文件已经存在！", Toast.LENGTH_SHORT).show();
 			}
-				
 		}
-		
 	}
-	class DownXmlTask extends AsyncTask<String, Integer, String>
-	{
+	class DownXmlTask extends AsyncTask<String, Integer, String>{
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
@@ -228,17 +223,21 @@ public class RemoteMp3ListActivity extends ListActivity {
 			String result=httpDownloader.download(params[0]);
 			return result;
 		}
-		
 	}
-	class ExitAppBroadcastReceiver extends BroadcastReceiver
-	{
-
+	class ExitAppBroadcastReceiver extends BroadcastReceiver{
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			finish();
 		}
-		
+	}
+	//广播过滤器
+	private IntentFilter getIntentFilter(){
+		if(intentFilter==null){
+			intentFilter=new IntentFilter();
+			intentFilter.addAction(AppConstant.DOWNLOAD_RESULT);
+		}
+		return intentFilter;
 	}
 	//关闭activity的broadcast过滤器
 	private IntentFilter getExitApp_IntentFilter(){

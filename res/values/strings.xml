@@ -10,16 +10,18 @@
     <string name="title_activity_player">PlayerActivity</string>
     <string name="title_activity_about_activity_dialog">AboutActivityDialog</string>
     <string name="title_activity_welcome">雨曦播放器</string>
-	<string name="pageOne">我的</string>
-	<string name="pageTwo">去淘歌</string>
-	<string name="pageThree">推荐</string>
-	<string name="localmusic">本地音乐</string>
-	<string name="downmusic">下载管理</string>
-	<string name="aboutus">关于我们</string>
-	<string name="siger">当前播放</string>
-	<string name="musicname_list"></string>
-	<string name="blank"> </string>
-	<string name="musicname_playing">当前播放:</string>
-	<string name="reload_popupwindow">更新歌曲</string>
-	<string name="exit_popupwindow">退出</string>
+    <string name="pageOne">我的</string>
+    <string name="pageTwo">去淘歌</string>
+    <string name="pageThree">推荐</string>
+    <string name="localmusic">本地音乐</string>
+    <string name="downmusic">下载管理</string>
+    <string name="aboutus">关于我们</string>
+    <string name="siger">当前播放</string>
+    <string name="musicname_list"></string>
+    <string name="blank"></string>
+    <string name="musicname_playing">当前播放:</string>
+    <string name="reload_popupwindow">更新歌曲</string>
+    <string name="exit_popupwindow">退出</string>
+    <string name="title_activity_notification">NotificationActivity</string>
+
 </resources>

@@ -2,6 +2,7 @@ package guo.fragment;
 
 import guo.mp3player.AppConstant;
 import guo.mp3player.R;
+import guo.mp3player.service.DownloadService;
 import guo.mp3player.service.PlayerService;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,9 @@ public class MainActivity extends FragmentActivity {
 		Intent stop_intent=new Intent();
 		stop_intent.setClass(MainActivity.this, PlayerService.class);
 		stopService(stop_intent);
+		Intent stop_download_intent=new Intent();
+		stop_download_intent.setClass(MainActivity.this, DownloadService.class);
+		stopService(stop_intent);
 		saveActivityPreferences();
 		unregisterReceiver(exitReceiver);
 		System.exit(0);
@@ -73,8 +77,9 @@ public class MainActivity extends FragmentActivity {
 	SharedPreferences activityPreferences=getSharedPreferences("SharePreference_playing_state", Context.MODE_WORLD_READABLE); 
 	// 打开sharedperferences编辑
 	SharedPreferences.Editor editor = activityPreferences.edit(); 
-	//存入position
+	//把状态改为初始值
 	editor.putBoolean("isplayinglaststate",false);
+	editor.putInt("seekbarProgress",0);
 	// Commit changes.
 	editor.commit();
 	}

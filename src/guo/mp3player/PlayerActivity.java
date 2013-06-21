@@ -58,14 +58,15 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 	private BroadcastReceiver exitReceiver;
 	private PopupWindow popupMenu;
 	private View exit_menu;
+	private int seekbarProgress=0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		System.out.println("PlayerActivity----->onCreate--->");
+		System.out.println("onCreate---seekbarProgress--->"+seekbarProgress);
 		setContentView(R.layout.activity_player);
 		viewInit();
 		listenerSetOn();
-
 	}
 	@Override
 	protected void onRestart() {
@@ -81,6 +82,7 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 		// TODO Auto-generated method stub
 		System.out.println("PlayerActivity---->onStart");
 		System.out.println("PlayerActivity开始isPlaying----->"+isPlaying);
+		System.out.println("onStart---seekbarProgress--->"+seekbarProgress);
 		super.onStart();
 		FileUtils fileUtils=new FileUtils();
 		//获取MP3目录下所有歌曲信息
@@ -88,14 +90,12 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 		Intent intent=getIntent();
 		//接收position，获取该mp3所在的位置，如果无法接收，默认值为0
 		position=intent.getIntExtra("position", 0);
+		//判断restartPosition是否为初始值，如果为否，把该值重新赋给position
 		if(restartPosition!=-1){
 			position=restartPosition;
 		}
 		//动态注册广播
 		setMusicName();
-
-		
-	
 		receiver=new LrcMessageBroadcastReceiver();
 		registerReceiver(receiver,getLrcIntentFileter());
 		seekbarReceiver=new SeekbarBroadCastReceiver();
@@ -108,6 +108,7 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 		// TODO Auto-generated method stub
 		System.out.println("PlayerActivity---->onPause");
 		System.out.println("onPause---position--->"+position);
+		System.out.println("onPause---seekbarProgress--->"+seekbarProgress);
 		saveActivityPreferences();
 		super.onPause();
 	}
@@ -116,11 +117,13 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 		// TODO Auto-generated method stub
 		System.out.println("PlayerActivity---->onResume");
 		lastPosition=getActivityPreferences();
-		//判断restartPosition是否为初始值，如果为否，把该值重新赋给position
-
 		isPlaying_lastState=getPlayingLastState();
+		int seekbarProgressone=getSeekbarProgress();
+		seekbar.setProgress(seekbarProgressone);
 		isPlaying=isPlaying_lastState;
-		System.out.println("onStart---position--->"+position);
+		System.out.println("onResume---position--->"+position);
+		System.out.println("onResume---seekbarProgress--->"+seekbarProgress);
+		System.out.println("onResume---seekbarProgressone--->"+seekbarProgressone);
 		autoPlay();
 		super.onResume();
 	}
@@ -129,6 +132,7 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 		// TODO Auto-generated method stub
 		System.out.println("PlayerActivity---->onDestroy");
 		System.out.println("PlayerActivity退出该ACtivity,isPlaying----->"+isPlaying);
+		System.out.println("PlayerActivity退出该ACtivity,seekbarProgress----->"+seekbarProgress);
 		super.onDestroy();
 		popupMenu=null;
 	}
@@ -136,8 +140,8 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		System.out.println("PlayerActivity---->onStop");
+		System.out.println("PlayerActivity-seekbarProgress--->onStop--->"+seekbarProgress);
 		super.onStop();
-	
 		unregisterReceiver(receiver);
 		unregisterReceiver(seekbarReceiver);
 		unregisterReceiver(exitReceiver);
@@ -150,6 +154,7 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 	SharedPreferences.Editor editor = activityPreferences.edit(); 
 	//存入position
 	editor.putInt("lastPosition",position);
+	editor.putInt("seekbarProgress",seekbarProgress);
 	editor.putBoolean("isplayinglaststate",isPlaying);
 	// Commit changes.
 	editor.commit();
@@ -160,8 +165,12 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 		int lastPosition = activityPreferences.getInt("lastPosition", -1); 
 		return lastPosition;
 	}
-	protected boolean getPlayingLastState()
-	{
+	protected int getSeekbarProgress(){
+		SharedPreferences activityPreferences=getSharedPreferences("SharePreference_playing_state", Context.MODE_WORLD_READABLE); 
+		int seekbarProgress = activityPreferences.getInt("seekbarProgress", -1); 
+		return seekbarProgress;
+	}
+	protected boolean getPlayingLastState(){
 		SharedPreferences activityPreferences=getSharedPreferences("SharePreference_playing_state", Context.MODE_WORLD_READABLE); 
 		Boolean isPlaying_lastState = activityPreferences.getBoolean("isplayinglaststate",true);
 		return isPlaying_lastState;
@@ -312,6 +321,7 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 					intent.setClass(PlayerActivity.this,PlayerService.class);
 					intent.putExtra("MSG", AppConstant.PlayerMsg.SEEK_MSG);
 					startService(intent);
+					seekbarProgress=progress;
 			}
 		}
 		@Override
@@ -364,7 +374,7 @@ public class PlayerActivity extends Activity implements OnTouchListener{
 		public void onReceive(Context arg0, Intent intent) {
 			// TODO Auto-generated method stub
 			//这里写接收到的数据：通过broadcast接收service发送过来的intent的数据。
-			int seekbarProgress=intent.getIntExtra("seekbarprogress",0);
+			seekbarProgress=intent.getIntExtra("seekbarprogress",0);
 			seekbar.setProgress(seekbarProgress);
 		}
 		

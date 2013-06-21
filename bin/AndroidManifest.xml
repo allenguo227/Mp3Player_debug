@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="guo.mp3player"
+    package="guo.mp3player"
     android:versionCode="1"
     android:versionName="1.0" >
+
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="10" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,21 +16,21 @@
         android:allowBackup="true"
         android:icon="@drawable/icon_red_1"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.NoTitleBar">
-        <activity
-            android:name="guo.mp3player.WelcomeActivity" >
+        android:theme="@android:style/Theme.NoTitleBar" >
+        <activity android:name="guo.mp3player.WelcomeActivity" >
             <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-       		</intent-filter>
-         </activity>
-         <activity 
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name="guo.fragment.MainActivity"
-            android:label="@string/app_name" 
-            android:configChanges="orientation|keyboardHidden">  
-        </activity> 
-          <activity
-            android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="guo.mp3player.MainActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
@@ -38,7 +40,6 @@
         <activity
             android:name="guo.mp3player.MainActivity_old"
             android:label="@string/app_name" >
-
         </activity>
         <activity
             android:name="guo.mp3player.LocalMp3ListActivity"
@@ -46,12 +47,11 @@
         </activity>
 
         <service android:name="guo.mp3player.service.DownloadService" >
-            
         </service>
         <service android:name="guo.mp3player.service.PlayerService" >
             <intent-filter>
-            <action android:name="guo.mp3player.PlayerService" />
-       		</intent-filter>
+                <action android:name="guo.mp3player.PlayerService" />
+            </intent-filter>
         </service>
 
         <activity
@@ -62,8 +62,7 @@
             android:name="guo.mp3player.AboutActivityDialog"
             android:label="@string/title_activity_about_activity_dialog"
             android:theme="@android:style/Theme.Dialog" >
-        </activity> 
- 
+        </activity>
     </application>
 
 </manifest>

@@ -52,7 +52,8 @@ public class LocalMp3ListActivity extends ListActivity implements OnTouchListene
 	private View root;
 	private boolean isPlaying;
 	private Mp3Info mp3Info;
-	private int position_local=0;
+	private int position=0;
+	private int seekbarProgress=0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,8 +62,6 @@ public class LocalMp3ListActivity extends ListActivity implements OnTouchListene
 		registerReceiver();
 		setListener();
 	}
-	
-	
 	//初始化组件
 	private void viewInit(){
 		playButton =(Button)findViewById(R.id.play_music);
@@ -98,6 +97,9 @@ public class LocalMp3ListActivity extends ListActivity implements OnTouchListene
 	@Override
 	protected void onResume() {
 		isPlaying=getPlayingLastState();
+		position=getPlayingLastPosition();
+		int seekbarProgressone=getSeekbarProgress();
+		seekbar.setProgress(seekbarProgressone);
 		if(isPlaying){
 			playButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.pause_selector));
 			}else if(!isPlaying){
@@ -108,21 +110,28 @@ public class LocalMp3ListActivity extends ListActivity implements OnTouchListene
 		//创建文件工具对象
 		FileUtils fileUtils=new FileUtils();
 		mp3Infos=fileUtils.getMp3Files("mp3/");
-		mp3Info=mp3Infos.get(position_local);
-		setPlayingMusicName();
-		//判断MP3infos是否为空，如果不为空才读取、
+		System.out.println("mp3Infos------->"+mp3Infos);
+		//判断MP3infos是否为null，如果不为null.证明获取到MP3infos信息
 		if(mp3Infos!=null){
+			System.out.println("mp3Infos-	1------>"+position);
+			//判断MP3infos是否为空，如果不为空才读取、为空代表无任何MP3文件
 			if(!mp3Infos.isEmpty()){
+				System.out.println("mp3Infos-	2------>");
+				mp3Info=mp3Infos.get(position);
 				loadMusiclist();
+				setPlayingMusicName();
 			}else{//否则告知MP3为空
+				//当
+				position=0;
 				loadMusiclist();
-				Toast.makeText(LocalMp3ListActivity.this, "MP3目录为空", AppConstant.Time.ONE_SECOND).show();
-				
+				System.out.println("mp3Infos-	3------>");
+				Toast.makeText(LocalMp3ListActivity.this, "找不到MP3音乐文件", AppConstant.Time.ONE_SECOND).show();
 			}
 		}else{
+			position=0;
+			System.out.println("mp3Infos-	4------>");
 				Toast.makeText(LocalMp3ListActivity.this, "MP3路径不存在", AppConstant.Time.ONE_SECOND).show();
 			}		
-	
 		super.onResume();
 	}
 	@Override
@@ -145,10 +154,11 @@ public class LocalMp3ListActivity extends ListActivity implements OnTouchListene
 	protected void saveActivityPreferences(){
 	// 仅限于本activity使用
 		SharedPreferences activityPreferences=getSharedPreferences("SharePreference_playing_state", Context.MODE_WORLD_READABLE); 
-			//getPreferences(Activity.MODE_PRIVATE);	 
 	// 打开sharedperferences编辑
 	SharedPreferences.Editor editor = activityPreferences.edit(); 
 	//存入position
+	editor.putInt("lastPosition",position);
+	editor.putInt("seekbarProgress",seekbarProgress);
 	editor.putBoolean("isplayinglaststate",isPlaying);
 	// Commit changes.
 	editor.commit();
@@ -158,6 +168,16 @@ public class LocalMp3ListActivity extends ListActivity implements OnTouchListene
 		SharedPreferences activityPreferences=getSharedPreferences("SharePreference_playing_state", Context.MODE_WORLD_READABLE);  
 		Boolean isPlaying_lastState = activityPreferences.getBoolean("isplayinglaststate",false);
 		return isPlaying_lastState;
+	}
+	protected int getSeekbarProgress(){
+		SharedPreferences activityPreferences=getSharedPreferences("SharePreference_playing_state", Context.MODE_WORLD_READABLE); 
+		int seekbarProgress = activityPreferences.getInt("seekbarProgress", -1); 
+		return seekbarProgress;
+	}
+	protected int getPlayingLastPosition(){
+		SharedPreferences activityPreferences=getSharedPreferences("SharePreference_playing_state", Context.MODE_WORLD_READABLE); 
+		int lastPosition = activityPreferences.getInt("lastPosition", -1); 
+		return lastPosition;
 	}
 	//设置当前播放歌曲名称
 	private void setPlayingMusicName(){
@@ -183,7 +203,6 @@ public class LocalMp3ListActivity extends ListActivity implements OnTouchListene
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		// TODO Auto-generated method stub
-		position_local=position;
 		Intent intent=new Intent();
 		intent.setClass(this, PlayerActivity.class);
 		System.out.println("position---->"+position);
@@ -195,9 +214,10 @@ public class LocalMp3ListActivity extends ListActivity implements OnTouchListene
 		@Override
 		public void onClick(View v) {
 			//通过service播放MP3
+			if(!mp3Infos.isEmpty()){
 			if(!isPlaying){
 			//通过该MP3位置获取该MP3信息
-			mp3Info=mp3Infos.get(position_local);
+			mp3Info=mp3Infos.get(position);
 			Intent intent=new Intent();
 			intent.setClass(LocalMp3ListActivity.this,PlayerService.class);
 			//传递该动作的状态到服务，服务接收后，判断状态，做出播放的响应
@@ -220,17 +240,19 @@ public class LocalMp3ListActivity extends ListActivity implements OnTouchListene
 				playButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.play_selector));
 			}
 		}
+		}
 	}
 	private class NextButtonListener implements OnClickListener{
 		@Override
 		public void onClick(View v) {
+			if(!mp3Infos.isEmpty()){
 			if(isPlaying){
-				if(position_local<mp3Infos.size()-1){
-					++position_local;
+				if(position<mp3Infos.size()-1){
+					++position;
 				}else{
-					position_local=0;
+					position=0;
 				}
-			mp3Info=mp3Infos.get(position_local);
+			mp3Info=mp3Infos.get(position);
 			setPlayingMusicName();
 			Intent intent=new Intent();
 			intent.setClass(LocalMp3ListActivity.this,PlayerService.class);
@@ -245,18 +267,20 @@ public class LocalMp3ListActivity extends ListActivity implements OnTouchListene
 			//setMusicName();
 			}
 		}
+			}
 	}
 	private class PreButtonListener implements OnClickListener{
 		@Override
 		public void onClick(View v) {
+			if(!mp3Infos.isEmpty()){
 			if(isPlaying){
-				if(position_local>0){
-					--position_local;
+				if(position>0){
+					--position;
 				}
 				else{
-					position_local=mp3Infos.size()-1;
+					position=mp3Infos.size()-1;
 				}
-			mp3Info=mp3Infos.get(position_local);
+			mp3Info=mp3Infos.get(position);
 			setPlayingMusicName();
 			Intent intent=new Intent();
 			intent.setClass(LocalMp3ListActivity.this,PlayerService.class);
@@ -270,6 +294,7 @@ public class LocalMp3ListActivity extends ListActivity implements OnTouchListene
 			playButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.pause_selector));
 			//setMusicName();
 			}
+			}	
 		}
 	}
 	class MenuOnClickListener implements OnClickListener{
@@ -313,8 +338,7 @@ public class LocalMp3ListActivity extends ListActivity implements OnTouchListene
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		// TODO Auto-generated method stub
 		if(ev.getAction()==MotionEvent.ACTION_UP){
-			if(popupMenu!=null&&popupMenu.isShowing())
-			{
+			if(popupMenu!=null&&popupMenu.isShowing()){
 				popupMenu.dismiss();
 		System.out.println("dispatchTouchEvent");
 		}
@@ -326,6 +350,7 @@ public class LocalMp3ListActivity extends ListActivity implements OnTouchListene
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress,
 				boolean fromUser) {
+			if(!mp3Infos.isEmpty()){
 			// TODO Auto-generated method stub
 			//如果进度被手动改变，把进度值发给服务，服务接收判断后，修改mediaplayer进度
 			if(fromUser==true){
@@ -334,6 +359,8 @@ public class LocalMp3ListActivity extends ListActivity implements OnTouchListene
 					intent.setClass(LocalMp3ListActivity.this,PlayerService.class);
 					intent.putExtra("MSG", AppConstant.PlayerMsg.SEEK_MSG);
 					startService(intent);
+					seekbarProgress=progress;
+			}
 			}
 		}
 		@Override
@@ -361,7 +388,7 @@ public class LocalMp3ListActivity extends ListActivity implements OnTouchListene
 		public void onReceive(Context arg0, Intent intent) {
 			// TODO Auto-generated method stub
 			//这里写接收到的数据：通过broadcast接收service发送过来的intent的数据。
-			int seekbarProgress=intent.getIntExtra("seekbarprogress",0);
+			seekbarProgress=intent.getIntExtra("seekbarprogress",0);
 			seekbar.setProgress(seekbarProgress);
 		}
 		
